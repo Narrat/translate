@@ -18,7 +18,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
+import urllib
 import re
+
 from http.client import HTTPConnection
 
 # Handle command line options.
