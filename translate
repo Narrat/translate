@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 #
 # translate -- Google Translator command line interface.
 #
@@ -21,15 +21,15 @@ import sys
 import urllib
 import re
 
-from http.client import HTTPConnection
+from httplib import HTTPConnection
 
 # Handle command line options.
 if len(sys.argv) < 3:
-    print("""Usage: translate FROM TO [WORDS...]
-    Translates WORDS from language FROM to language TO. Uses
-    Google Translator as the translator backend.
-    \nCopyright (C) 2009 Henri Hakkinen.
-    Report bugs to <henux@users.sourceforge.net>.""")
+    print "Usage: translate FROM TO [WORDS...]"
+    print "Translates WORDS from language FROM to language TO. Uses"
+    print "Google Translator as the translator backend."
+    print "\nCopyright (C) 2009 Henri Hakkinen."
+    print "Report bugs to <henux@users.sourceforge.net>."
     sys.exit(1)
 
 FROM  = sys.argv[1]
@@ -53,7 +53,7 @@ conn.request("POST", "/translate_t", body)
 
 resp = conn.getresponse()
 if resp.status != 200:
-    print("Server responded with error code %d." % (resp.status))
+    print "Server responded with error code %d." % (resp.status)
     sys.exit(1)
 
 # Parse the result.
@@ -61,6 +61,6 @@ if resp.status != 200:
 match = re.search(">([^<]*)</span></span></div></div>", resp.read())
 conn.close()
 if not match: sys.exit(1)
-print(match.group(1))
+print match.group(1)
 
 # vim:set sts=4 sw=4 et:
