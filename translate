@@ -39,12 +39,6 @@ if len(WORDS) == 0:
     for line in sys.stdin:
         WORDS += line.split()
 
-# Set the decoding and encoding (default will be utf8 unless I know if latin1 or w/e should be the default)
-if TO == 'de':
-    dec = 'latin1'
-else:
-    dec = 'utf8'
-    
 # Construct the message body.
 body = "sl=%s&tl=%s&text=%s" % (FROM, TO, WORDS[0])
 for w in WORDS[1:]:
@@ -62,7 +56,7 @@ if resp.status != 200:
 
 # Parse the result.
 #match = re.search("<div id=result_box[^>]*>([^<]*)</div>", resp.read())
-match = re.search(">([^<]*)</span></span></div></div>", resp.read().decode(dec))
+match = re.search(">([^<]*)</span></span></div></div>", resp.read().decode('latin1'))
 conn.close()
 if not match: sys.exit(1)
 print(match.group(1))
