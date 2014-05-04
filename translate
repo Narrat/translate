@@ -42,14 +42,14 @@ if len(WORDS) == 0:
         WORDS += line.split()
 
 # Construct the message body.
-body = "sl=%s&tl=%s&text=%s" % (FROM, TO, WORDS[0])
+body = "/translate_a/t?client=x&hl=%s&sl=%s&tl=%s&text=%s" % (FROM, FROM, TO, WORDS[0])
 for w in WORDS[1:]:
     #body += "+%s" % (w)
     body += "%s" % (w)
 
 # Connect to translate.google.com and request result.
 conn = HTTPConnection("translate.google.com")
-conn.request("POST", "/translate_t", body)
+conn.request("GET", body)
 
 resp = conn.getresponse()
 if resp.status != 200:
@@ -57,10 +57,9 @@ if resp.status != 200:
     sys.exit(1)
 
 # Parse the result.
-#match = re.search("<div id=result_box[^>]*>([^<]*)</div>", resp.read())
-match = re.search(">([^<]*)</span></span></div></div>", resp.read())
+match = re.search(":\".*?\"", resp.read())
 conn.close()
 if not match: sys.exit(1)
-print match.group(1)
+print(match.group()[2:-1])
 
 # vim:set sts=4 sw=4 et:
