@@ -39,11 +39,8 @@ if len(WORDS) == 0:
     for line in sys.stdin:
         WORDS += line.split()
 
-# Set the decoding and encoding (default will be utf8 unless I know if latin1 or w/e should be the default)
-if TO == 'de':
-    dec = 'latin1'
-else:
-    dec = 'utf8'
+# Set the decoding and encoding (default will be latin1 (check utf-8 url))
+dec = 'latin1'
     
 # Construct the message body.
 body = "/translate_a/t?client=x&hl=%s&sl=%s&tl=%s&text=%s" % (FROM, FROM, TO, WORDS[0])
