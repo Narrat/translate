@@ -36,8 +36,9 @@ WORDS = sys.argv[3:]
 
 # If no words are given in the command line; read from stdin.
 if len(WORDS) == 0:
-    for line in sys.stdin:
-        WORDS += line.split()
+    line = input()
+    # Convert str into list, so the body constructor doesn't explode
+    WORDS = line.split(' ')
 
 # Set the decoding and encoding (default will be latin1 (check utf-8 url))
 dec = 'latin1'
