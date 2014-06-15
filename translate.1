@@ -9,7 +9,7 @@ translate \- Google Translator command line interface
 .SH DESCRIPTION
 Translates WORDS from the language FROM to the language TO and prints them to stdout.
 FROM and TO languages must be given as language code identifiers (see below).
-If no WORDS are given, then words are read from stdin.
+If no WORDS are given, then words are read from stdin. This allows piping. Empty stdin enters a text in mode. Enter words and invoke on a newline ^D to leave the text mode and continue translation.
 If some WORDS are not recognized, then they are printed as verbatim.
 .SH SUPPORTED LANGUAGES
 As of Januart 11 2009, Google Translator suppors the following languages:
