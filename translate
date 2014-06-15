@@ -39,9 +39,6 @@ if len(WORDS) == 0:
     line = input()
     # Convert str into list, so the body constructor doesn't explode
     WORDS = line.split(' ')
-
-# Set the decoding and encoding (default will be latin1 (check utf-8 url))
-dec = 'latin1'
     
 # Construct the message body.
 body = "/translate_a/t?client=x&hl=%s&sl=%s&tl=%s&text=%s" % (FROM, FROM, TO, WORDS[0])
@@ -58,7 +55,7 @@ if resp.status != 200:
     sys.exit(1)
 
 # Parse the result.
-match = re.search(":\".*?\"", resp.read().decode(dec))
+match = re.search(":\".*?\"", resp.read().decode('latin1'))
 conn.close()
 if not match: sys.exit(1)
 print(match.group()[2:-1])
