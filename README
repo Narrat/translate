@@ -7,7 +7,7 @@ written in Python programming language.
 
 Usage: translate FROM TO [WORDS...]
 
-If WORDS are not given, reads from stdin.
+If WORDS are not given, reads from stdin. This allows piping. Empty stdin enters a text in mode. Enter words and invoke on a newline ^D to leave the text mode and continue translation.
 
 As of January 11 2009, Google Translator supports following languages:
 
