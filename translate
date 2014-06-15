@@ -38,8 +38,9 @@ WORDS = sys.argv[3:]
 
 # If no words are given in the command line; read from stdin.
 if len(WORDS) == 0:
-    for line in sys.stdin:
-        WORDS += line.split()
+    line = input()
+    # Convert str into list, so the body constructor doesn't explode
+    WORDS = line.split(' ')
 
 # Construct the message body.
 body = "/translate_a/t?client=x&hl=%s&sl=%s&tl=%s&text=%s" % (FROM, FROM, TO, WORDS[0])
