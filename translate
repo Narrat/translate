@@ -20,8 +20,7 @@
 import sys
 import urllib
 import re
-
-from httplib import HTTPConnection
+from httplib import HTTPSConnection
 
 # Handle command line options.
 if len(sys.argv) < 3:
@@ -41,14 +40,14 @@ if len(WORDS) == 0:
     print("Reading STDIN (through piping or direct input)\nIf direct input use ^D on a newline to exit and continue:\n")
     for line in sys.stdin:
         WORDS += line.split()
-  
+
 # Construct the message body.
 body = "/translate_a/t?client=x&hl={0}&sl={0}&tl={1}&text={2}".format(FROM, TO, WORDS[0])
 for w in WORDS[1:]:
     body += "+%s" % (w)
 
 # Connect to translate.google.com and request result.
-conn = HTTPConnection("translate.google.com")
+conn = HTTPSConnection("translate.google.com")
 conn.request("GET", body)
 
 resp = conn.getresponse()
