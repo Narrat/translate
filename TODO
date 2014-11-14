@@ -1,3 +1,4 @@
 translate TODO
 
-  - manual page
+  - check if WORDS should be encoded to latin1 before sending the request
+  - language list
