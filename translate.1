@@ -1,18 +1,20 @@
-.TH "TRANSLATE" "1" "Januart 2009" "Version 20090111" "User Commands"
+.TH "TRANSLATE" "1" "November 2014" "Version 20141114" "User Commands"
 .SH NAME
 translate \- Google Translator command line interface
 .SH SYNOPSIS
 .B translate
 .I FROM
 .I TO
-.I WORDS...
+.I [WORDS...]
 .SH DESCRIPTION
 Translates WORDS from the language FROM to the language TO and prints them to stdout.
 FROM and TO languages must be given as language code identifiers (see below).
-If no WORDS are given, then words are read from stdin. This allows piping. Empty stdin enters a text in mode. Enter words and invoke on a newline ^D to leave the text mode and continue translation.
+If WORDS are missing it tries to read from STDIN. This allows piping.
+Empty STDIN enters a input mode. Enter words and invoke on a
+newline ^D to leave the text mode and continue translation.
 If some WORDS are not recognized, then they are printed as verbatim.
 .SH SUPPORTED LANGUAGES
-As of Januart 11 2009, Google Translator suppors the following languages:
+As of January 11 2009, Google Translator supports following languages:
 
  ar
 Arabic
@@ -86,16 +88,20 @@ Vietnamese
 Translate the Finnish word "ohjelmisto" into English.
 .TP
 .B translate en de < foo
-Translates the file
+Translates the content of file
 .I foo
-from English to Germany.
-.SH AUTHOR
-Written by Henri Hakkinen.
+from english to german and print it to STDOUT.
+.TP
+.B translate en fr
+Enters a modus where you can enter words.
+^D on a newline continues with the translation process.
 .SH REPORTING BUGS
-Report bugs to <henux@users.sourceforge.net>.
+Report bugs at <https://github.com/Narrat/translate.git/>.
 .SH COPYRIGHT
-Copyright \(co 2009 Henri Hakkinen.
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.
+ Copyright \(co 2009 Henri Hakkinen.
+ Copyright \(co 2013-2014 Lex Black.
+.PP
+translate is distributed under the terms of the GNU General Public License version 3 or later.
 .PP
 This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.

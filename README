@@ -1,13 +1,16 @@
 translate README
 
 Copyright (C) 2009 Henri Häkkinen.
+Copyright (c) 2013-2014 Lex Black.
 
 `translate` is a command line interface for the Google Translator service
 written in Python programming language.
 
 Usage: translate FROM TO [WORDS...]
 
-If WORDS are not given, reads from stdin. This allows piping. Empty stdin enters a text in mode. Enter words and invoke on a newline ^D to leave the text mode and continue translation.
+If WORDS are missing it tries to read from STDIN. This allows piping.
+Empty STDIN enters a input mode. Enter words and invoke on a
+newline ^D to leave the text mode and continue translation.
 
 As of January 11 2009, Google Translator supports following languages:
 

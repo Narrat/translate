@@ -3,6 +3,7 @@
 # translate -- Google Translator command line interface.
 #
 # Copyright (C) 2009 Henri Hakkinen.
+# Copyright (c) 2013-2014 Lex Black
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,20 +25,21 @@ from httplib import HTTPSConnection
 
 # Handle command line options.
 if len(sys.argv) < 3:
-    print "Usage: translate FROM TO [WORDS...]"
-    print "Translates WORDS from language FROM to language TO. Uses"
-    print "Google Translator as the translator backend."
-    print "\nCopyright (C) 2009 Henri Hakkinen."
-    print "Report bugs to <henux@users.sourceforge.net>."
+    print """Usage: translate FROM TO [WORDS...]
+    Translates WORDS from language FROM to language TO.
+    Uses Google Translator as the translator backend.
+    With no words given it reads from STDIN (^D on newline to move on).
+    \nCopyright (C) 2009 Henri Hakkinen.
+    Copyright (c) 2013-2014 Lex Black.
+    Report bugs at https://github.com/Narrat/translate.git/"""
     sys.exit(1)
 
 FROM  = sys.argv[1]
 TO    = sys.argv[2]
 WORDS = sys.argv[3:]
 
-# If no words are given in the command line; read from stdin.
+# If no words are given while invoking; read from stdin.
 if len(WORDS) == 0:
-    print("Reading STDIN (through piping or direct input)\nIf direct input use ^D on a newline to exit and continue:\n")
     for line in sys.stdin:
         WORDS += line.split()
 
