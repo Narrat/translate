@@ -6,11 +6,14 @@ Copyright (c) 2013-2014 Lex Black.
 `translate` is a command line interface for the Google Translator service
 written in Python programming language.
 
-Usage: translate FROM TO [WORDS...]
+Usage: translate [-x] FROM TO [WORDS...]
 
 If WORDS are missing it tries to read from STDIN. This allows piping.
 Empty STDIN enters a input mode. Enter words and invoke on a
 newline ^D to leave the text mode and continue translation.
+
+Passing -x will show extended output (i.e. alternative translations) if
+available.
 
 As of January 11 2009, Google Translator supports following languages:
 

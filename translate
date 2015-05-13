@@ -18,25 +18,91 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
+import argparse
 import re
+import sys
+import textwrap
 from http.client import HTTPSConnection
 from urllib.parse import quote_plus
 
-# Handle command line options.
-if len(sys.argv) < 3:
-    print("""Usage: translate FROM TO [WORDS...]
-    Translates WORDS from language FROM to language TO.
-    Uses Google Translator as the translator backend.
-    With no words given it reads from STDIN (^D on newline to move on).
-    \nCopyright (C) 2009 Henri Hakkinen.
-    Copyright (c) 2013-2014 Lex Black.
-    Report bugs at https://github.com/Narrat/translate.git/""")
-    sys.exit(1)
 
-FROM  = sys.argv[1]
-TO    = sys.argv[2]
-WORDS = sys.argv[3:]
+def parseresponsebody(responsebody: str):
+    queue = []
+    result = [[[None]]]  # safe default return value
+
+    def startarray(position):
+        queue.append([])
+        return 1
+
+    def endarray(position):
+        nonlocal result
+        finishedarray = queue.pop()
+        if len(queue) == 0:
+            result = finishedarray
+        else:
+            queue[-1].append(finishedarray)
+        return 1
+
+    def quote(position):
+        # find unescaped ". Start from the current position, so for empty string will match ""
+        unescapedquote = re.search("[^\\\]\"", responsebody[position:])
+
+        token = responsebody[position + 1: position + unescapedquote.end() - 1]
+        queue[-1].append(token)
+        if unescapedquote:
+            return unescapedquote.end()
+        else:
+            return 1
+
+    def endvalue(position):
+        return 1
+
+    def generictoken(position):
+        terminator = re.search("[,\]]", responsebody[position + 1:])
+        # we are not interested in non-string tokens
+        # token = text[position : position+match.end()]
+        queue[-1].append(None)  # append token instead of None if interested
+        return terminator.end()
+
+    terminators = {
+        '[': startarray,
+        ']': endarray,
+        '"': quote,
+        ',': endvalue,
+    }
+
+    position = 0
+    while position < len(responsebody):
+        char = responsebody[position]
+        fn = terminators.get(char, generictoken)
+        position += fn(position)
+
+    return result
+
+
+# Handle command-line
+parser = argparse.ArgumentParser(
+    prog='translate',
+    formatter_class=argparse.RawDescriptionHelpFormatter,
+    description="Translates WORDS from language FROM to language TO.\n"
+                "Uses Google Translator as the translator backend.\n"
+                "With no words given it reads from STDIN (^D on newline to move on).",
+    epilog="Copyright (c) 2009 Henri Hakkinen.\n"
+           "Copyright (c) 2013-2014 Lex Black.\n"
+           "Report bugs at https://github.com/Narrat/translate.git/")
+
+parser.add_argument('-x',
+                    help='show extended output (alternative translations, explanations, etc.)',
+                    action='store_const', const=True, dest='extended')
+parser.add_argument('FROM', help='FROM language')
+parser.add_argument('TO', help='TO language')
+parser.add_argument('WORDS', help='words to translate', nargs='*')
+args = parser.parse_args()
+
+FROM = args.FROM
+TO = args.TO
+WORDS = args.WORDS
+extended = args.extended
 
 # If no words are given while invoking; read from stdin.
 if len(WORDS) == 0:
@@ -48,7 +114,8 @@ for count in range(0, len(WORDS)):
     WORDS[count] = quote_plus(WORDS[count])
 
 # Construct the message body.
-body = "/translate_a/single?client=x&ie=UTF-8&oe=UTF-8&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&dt=at&hl={0}&sl={0}&tl={1}&q={2}".format(FROM, TO, WORDS[0])
+body = "/translate_a/single?client=x&ie=UTF-8&oe=UTF-8&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&dt=at&hl={0}&sl={0}&tl={1}&q={2}".format(
+    FROM, TO, WORDS[0])
 for w in WORDS[1:]:
     body += "+%s" % (w)
 
@@ -61,10 +128,20 @@ if resp.status != 200:
     print("Server responded with error code %d." % (resp.status))
     sys.exit(1)
 
-# Parse the result.
-match = re.search("\[\[\[\".*?\"", resp.read().decode('utf-8', 'replace'))
+respbody = resp.read().decode('utf-8', 'replace')
 conn.close()
-if not match: sys.exit(1)
-print(match.group()[4:-1])
+
+parsedresponse = parseresponsebody(respbody)
+translation = parsedresponse[0][0][0]
+print(translation)
+
+if extended and type(parsedresponse[1]) is list:
+    for grammar in parsedresponse[1]:
+        grammarname = textwrap.indent(grammar[0], '  ')
+        print(grammarname)
+        for entry in grammar[2]:
+            entryname = textwrap.indent(entry[0], '    ')
+            print(entryname, end="")
+            print(" [{}]".format(", ".join(entry[1])))
 
 # vim:set sts=4 sw=4 et:
