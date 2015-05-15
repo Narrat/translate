@@ -109,15 +109,12 @@ if len(WORDS) == 0:
     for line in sys.stdin:
         WORDS += line.split()
 
-# Encode WORDS so non ASCII chars can be passed within an URL
-for count in range(0, len(WORDS)):
-    WORDS[count] = quote_plus(WORDS[count])
+# List to String and make it work for URLs
+totrans = quote_plus(" ".join(WORDS))
 
 # Construct the message body.
 body = "/translate_a/single?client=x&ie=UTF-8&oe=UTF-8&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&dt=at&hl={0}&sl={0}&tl={1}&q={2}".format(
-    FROM, TO, WORDS[0])
-for w in WORDS[1:]:
-    body += "+%s" % (w)
+    FROM, TO, totrans)
 
 # Connect to translate.google.com and request result.
 conn = HTTPSConnection("translate.google.com")
